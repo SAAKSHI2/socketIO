@@ -6,6 +6,10 @@ const http = require('http');
 const mongoose = require('mongoose');
 const { Emitter } = require("@socket.io/mongo-emitter");
 
+require('dotenv').config();
+
+
+
 
 const DB = "ChatApp";
 const COLLECTION = "socket.io-adapter-event";
