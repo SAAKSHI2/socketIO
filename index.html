@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat App</title>
+  <style>
+    #messages {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+    #messages li {
+      padding: 5px 10px;
+    }
+  </style>
+</head>
+<body>
+  <ul id="messages"></ul>
+  <form id="form" action="">
+    <input id="inputUser" autocomplete="off" placeholder="user"/>
+    <input id="input" autocomplete="off" placeholder="message"/><button>Send</button>
+  </form>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    const form = document.getElementById('form');
+    const input = document.getElementById('input');
+    const user = document.getElementById('inputUser');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (input.value) {
+        socket.emit('chat message', {"message" : input.value, "user" : user.value, "groupName" : "NewChatApp"});
+        input.value = '';
+      }
+    });
+
+    socket.on('chat message', (msg) => {
+      const item = document.createElement('li');
+      item.textContent = msg.user + ': ' + msg.message;
+      document.getElementById('messages').appendChild(item);
+    });
+
+    socket.on('chat history', (history) => {
+      const messages = document.getElementById('messages');
+      messages.innerHTML = '';
+      history.forEach((msg) => {
+        const item = document.createElement('li');
+        item.textContent = msg.user + ': ' + msg.message;
+        messages.appendChild(item);
+      });
+    });
+  </script>
+</body>
+</html>
